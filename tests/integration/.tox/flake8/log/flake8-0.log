@@ -1,0 +1,9 @@
+actionid: flake8
+msg: getenv
+cmdargs: ['/home/darren/.virtualenvs/py27/bin/python2.7', '-m', 'virtualenv', '--python', '/home/darren/.virtualenvs/py27/bin/python2.7', 'flake8']
+
+Already using interpreter /home/darren/.virtualenvs/py27/bin/python2.7
+Using real prefix '/usr'
+New python executable in /home/darren/src/workload-api/tests/integration/.tox/flake8/bin/python2.7
+Also creating executable in /home/darren/src/workload-api/tests/integration/.tox/flake8/bin/python
+Installing setuptools, pip, wheel...done.

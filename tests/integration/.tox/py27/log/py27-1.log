@@ -1,0 +1,55 @@
+actionid: py27
+msg: getenv
+cmdargs: ['/home/darren/src/workload-api/tests/integration/.tox/py27/bin/pip', 'install', '-rrequirements.txt']
+
+Collecting git+https://github.com/rancher/gdapi-python.git@31d74507d96c8f053a08bda129cc63f96ca60161 (from -r requirements.txt (line 2))
+  Cloning https://github.com/rancher/gdapi-python.git (to 31d74507d96c8f053a08bda129cc63f96ca60161) to /tmp/pip-3I_Lh2-build
+  Could not find a tag or branch '31d74507d96c8f053a08bda129cc63f96ca60161', assuming commit.
+Collecting cattle==0.5.3 (from -r requirements.txt (line 1))
+Collecting websocket-client==0.23.0 (from -r requirements.txt (line 3))
+Collecting PyJWT==1.4.0 (from -r requirements.txt (line 4))
+  Using cached PyJWT-1.4.0-py2.py3-none-any.whl
+Collecting flake8==2.5.1 (from -r requirements.txt (line 6))
+  Using cached flake8-2.5.1-py2.py3-none-any.whl
+Collecting pytest==3.0.2 (from -r requirements.txt (line 7))
+  Using cached pytest-3.0.2-py2.py3-none-any.whl
+Collecting pytest-repeat (from -r requirements.txt (line 8))
+  Using cached pytest_repeat-0.4.1-py2.py3-none-any.whl
+Collecting pytest-xdist (from -r requirements.txt (line 9))
+  Using cached pytest_xdist-1.20.1-py2.py3-none-any.whl
+Collecting pyyaml (from -r requirements.txt (line 10))
+Collecting netaddr (from -r requirements.txt (line 11))
+  Using cached netaddr-0.7.19-py2.py3-none-any.whl
+Collecting requests (from -r requirements.txt (line 12))
+  Using cached requests-2.18.4-py2.py3-none-any.whl
+Collecting argcomplete (from gdapi-python==0.5.3->-r requirements.txt (line 2))
+  Using cached argcomplete-1.9.3-py2.py3-none-any.whl
+Collecting six (from gdapi-python==0.5.3->-r requirements.txt (line 2))
+  Using cached six-1.11.0-py2.py3-none-any.whl
+Collecting backports.ssl-match-hostname (from websocket-client==0.23.0->-r requirements.txt (line 3))
+Collecting pyflakes<1.1,>=0.8.1 (from flake8==2.5.1->-r requirements.txt (line 6))
+  Using cached pyflakes-1.0.0-py2.py3-none-any.whl
+Collecting pep8!=1.6.0,!=1.6.1,!=1.6.2,>=1.5.7 (from flake8==2.5.1->-r requirements.txt (line 6))
+  Using cached pep8-1.7.1-py2.py3-none-any.whl
+Collecting mccabe<0.4,>=0.2.1 (from flake8==2.5.1->-r requirements.txt (line 6))
+  Using cached mccabe-0.3.1-py2.py3-none-any.whl
+Collecting py>=1.4.29 (from pytest==3.0.2->-r requirements.txt (line 7))
+  Using cached py-1.5.2-py2.py3-none-any.whl
+Collecting execnet>=1.1 (from pytest-xdist->-r requirements.txt (line 9))
+  Using cached execnet-1.5.0-py2.py3-none-any.whl
+Collecting pytest-forked (from pytest-xdist->-r requirements.txt (line 9))
+  Using cached pytest_forked-0.2-py2.py3-none-any.whl
+Collecting chardet<3.1.0,>=3.0.2 (from requests->-r requirements.txt (line 12))
+  Using cached chardet-3.0.4-py2.py3-none-any.whl
+Collecting idna<2.7,>=2.5 (from requests->-r requirements.txt (line 12))
+  Using cached idna-2.6-py2.py3-none-any.whl
+Collecting certifi>=2017.4.17 (from requests->-r requirements.txt (line 12))
+  Using cached certifi-2017.11.5-py2.py3-none-any.whl
+Collecting urllib3<1.23,>=1.21.1 (from requests->-r requirements.txt (line 12))
+  Using cached urllib3-1.22-py2.py3-none-any.whl
+Collecting apipkg>=1.4 (from execnet>=1.1->pytest-xdist->-r requirements.txt (line 9))
+  Using cached apipkg-1.4-py2.py3-none-any.whl
+Installing collected packages: argcomplete, chardet, idna, certifi, urllib3, requests, six, gdapi-python, cattle, backports.ssl-match-hostname, websocket-client, PyJWT, pyflakes, pep8, mccabe, flake8, py, pytest, pytest-repeat, apipkg, execnet, pytest-forked, pytest-xdist, pyyaml, netaddr
+  Running setup.py install for gdapi-python: started
+    Running setup.py install for gdapi-python: finished with status 'done'
+Successfully installed PyJWT-1.4.0 apipkg-1.4 argcomplete-1.9.3 backports.ssl-match-hostname-3.5.0.1 cattle-0.5.3 certifi-2017.11.5 chardet-3.0.4 execnet-1.5.0 flake8-2.5.1 gdapi-python-0.5.3 idna-2.6 mccabe-0.3.1 netaddr-0.7.19 pep8-1.7.1 py-1.5.2 pyflakes-1.0.0 pytest-3.0.2 pytest-forked-0.2 pytest-repeat-0.4.1 pytest-xdist-1.20.1 pyyaml-3.12 requests-2.18.4 six-1.11.0 urllib3-1.22 websocket-client-0.23.0

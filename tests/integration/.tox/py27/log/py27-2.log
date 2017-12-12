@@ -1,0 +1,12 @@
+actionid: py27
+msg: installpkg
+cmdargs: ['/home/darren/src/workload-api/tests/integration/.tox/py27/bin/pip', 'install', '/home/darren/src/workload-api/tests/integration/.tox/dist/IntegrationTests-0.1.zip']
+
+Processing ./.tox/dist/IntegrationTests-0.1.zip
+Building wheels for collected packages: IntegrationTests
+  Running setup.py bdist_wheel for IntegrationTests: started
+  Running setup.py bdist_wheel for IntegrationTests: finished with status 'done'
+  Stored in directory: /home/darren/.cache/pip/wheels/d6/7f/3c/b15053371ccce3100322ff7549f4bb6bc25833519457d7aac9
+Successfully built IntegrationTests
+Installing collected packages: IntegrationTests
+Successfully installed IntegrationTests-0.1

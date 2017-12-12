@@ -1,0 +1,30 @@
+actionid: flake8
+msg: envreport
+cmdargs: ['/home/darren/src/workload-api/tests/integration/.tox/flake8/bin/pip', 'freeze']
+
+apipkg==1.4
+argcomplete==1.9.3
+backports.ssl-match-hostname==3.5.0.1
+cattle==0.5.3
+certifi==2017.11.5
+chardet==3.0.4
+execnet==1.5.0
+flake8==2.5.1
+gdapi-python==0.5.3
+idna==2.6
+IntegrationTests==0.1
+mccabe==0.3.1
+netaddr==0.7.19
+pep8==1.7.1
+py==1.5.2
+pyflakes==1.0.0
+PyJWT==1.4.0
+pytest==3.0.2
+pytest-forked==0.2
+pytest-repeat==0.4.1
+pytest-xdist==1.20.1
+PyYAML==3.12
+requests==2.18.4
+six==1.11.0
+urllib3==1.22
+websocket-client==0.23.0
