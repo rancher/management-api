@@ -14,6 +14,9 @@ var (
 		Version: "v3",
 		Group:   "management.cattle.io",
 		Path:    "/v3",
+		SubContexts: map[string]bool{
+			"clusters": true,
+		},
 	}
 
 	Schemas = factory.Schemas(&Version).
@@ -71,7 +74,13 @@ func clusterTypes(schemas *types.Schemas) *types.Schemas {
 		AddMapperForType(&Version, v3.ClusterStatus{},
 			m.Drop{"appliedSpec"},
 		).
-		MustImport(&Version, v3.Cluster{}).
+		AddMapperForType(&Version, v3.ClusterEvent{}, &m.Move{
+			From: "type",
+			To:   "eventType",
+		}).
+		MustImportAndCustomize(&Version, v3.Cluster{}, func(schema *types.Schema) {
+			schema.SubContext = "clusters"
+		}).
 		MustImport(&Version, v3.ClusterEvent{}).
 		MustImport(&Version, v3.ClusterRegistrationToken{})
 }
@@ -87,16 +96,29 @@ func authzTypes(schemas *types.Schemas) *types.Schemas {
 			&m.Move{From: "subject/namespace", To: "subjectNamespace"},
 			&m.Drop{Field: "subject"},
 		).
+		AddMapperForType(&Version, v3.ClusterRoleTemplateBinding{},
+			&m.Move{From: "subject/name", To: "subjectName"},
+			&m.Move{From: "subject/kind", To: "subjectKind"},
+			&m.Move{From: "subject/namespace", To: "subjectNamespace"},
+			&m.Drop{Field: "subject"},
+		).
 		MustImportAndCustomize(&Version, v3.Project{}, func(schema *types.Schema) {
 			schema.SubContext = "projects"
 		}).
 		MustImport(&Version, v3.RoleTemplate{}).
 		MustImport(&Version, v3.PodSecurityPolicyTemplate{}).
-		MustImport(&Version, v3.ClusterRoleTemplateBinding{}).
+		MustImportAndCustomize(&Version, v3.ClusterRoleTemplateBinding{}, func(schema *types.Schema) {
+			schema.MustCustomizeField("subjectKind", func(field types.Field) types.Field {
+				field.Type = "enum"
+				field.Options = []string{"User", "Group", "ServiceAccount", "Principal"}
+				field.Nullable = false
+				return field
+			})
+		}).
 		MustImportAndCustomize(&Version, v3.ProjectRoleTemplateBinding{}, func(schema *types.Schema) {
 			schema.MustCustomizeField("subjectKind", func(field types.Field) types.Field {
 				field.Type = "enum"
-				field.Options = []string{"User", "Group", "ServiceAccount"}
+				field.Options = []string{"User", "Group", "ServiceAccount", "Principal"}
 				field.Nullable = false
 				return field
 			})
@@ -122,11 +144,13 @@ func machineTypes(schemas *types.Schemas) *types.Schemas {
 
 func authnTypes(schemas *types.Schemas) *types.Schemas {
 	return schemas.
+		AddMapperForType(&Version, v3.User{}, m.DisplayName{}).
+		AddMapperForType(&Version, v3.Group{}, m.DisplayName{}).
 		MustImport(&Version, v3.Token{}).
 		MustImport(&Version, v3.User{}).
 		MustImport(&Version, v3.Group{}).
 		MustImport(&Version, v3.GroupMember{}).
-		MustImport(&Version, v3.Identity{}).
+		MustImport(&Version, v3.Principal{}).
 		MustImport(&Version, v3.LoginInput{}).
 		MustImport(&Version, v3.LocalCredential{}).
 		MustImport(&Version, v3.GithubCredential{})

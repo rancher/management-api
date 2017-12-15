@@ -65,8 +65,11 @@ type MachineStatus struct {
 	Requested       v1.ResourceList    `json:"requested,omitempty"`
 	Limits          v1.ResourceList    `json:"limits,omitempty"`
 	Provisioned     bool               `json:"provisioned,omitempty"`
+	SSHUser         string             `json:"sshUser,omitempty"`
 	SSHPrivateKey   string             `json:"sshPrivateKey,omitempty"`
 	ExtractedConfig string             `json:"extractedConfig,omitempty"`
+	Address         string             `json:"address,omitempty"`
+	NodeConfig      *RKEConfigNode     `json:"nodeConfig,omitempty"`
 }
 
 type MachineCondition struct {
@@ -88,6 +91,7 @@ type MachineSpec struct {
 	MachineTemplateName string      `json:"machineTemplateName" norman:"type=reference[machineTemplate]"`
 	Description         string      `json:"description"`
 	Driver              string      `json:"driver"`
+	Role                string      `json:"role"`
 
 	MachineCommonParams `json:",inline"`
 	AmazonEC2Config     AmazonEC2Config    `json:"amazonEc2Config"`
@@ -273,13 +277,12 @@ type MachineDriverCondition struct {
 }
 
 type MachineDriverSpec struct {
-	DisplayName      string `json:"displayName"`
-	Description      string `json:"description"`
-	URL              string `json:"url"`
-	ExternalID       string `json:"externalId"`
-	Builtin          bool   `json:"builtin"`
-	DefaultActive    bool   `json:"defaultActive"`
-	ActivateOnCreate bool   `json:"activateOnCreate"`
-	Checksum         string `json:"checksum"`
-	UIURL            string `json:"uiUrl"`
+	DisplayName string `json:"displayName"`
+	Description string `json:"description"`
+	URL         string `json:"url"`
+	ExternalID  string `json:"externalId"`
+	Builtin     bool   `json:"builtin"`
+	Active      bool   `json:"active"`
+	Checksum    string `json:"checksum"`
+	UIURL       string `json:"uiUrl"`
 }
