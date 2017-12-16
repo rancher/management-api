@@ -129,6 +129,11 @@ func (u *urlBuilder) Version(version types.APIVersion) string {
 	return u.constructBasicURL(version)
 }
 
+func (u *urlBuilder) FilterLink(schema *types.Schema, fieldName string, value string) string {
+	return u.constructBasicURL(schema.Version, schema.PluralName) + "?" +
+		url.QueryEscape(fieldName) + "=" + url.QueryEscape(value)
+}
+
 func (u *urlBuilder) constructBasicURL(version types.APIVersion, parts ...string) string {
 	buffer := bytes.Buffer{}
 
@@ -248,4 +253,8 @@ func parseResponseURLBase(requestURL string, r *http.Request) (string, error) {
 	}
 
 	return requestURL[0:index], nil
+}
+
+func (u *urlBuilder) Action(action string, resource *types.RawResource) string {
+	return u.constructBasicURL(resource.Schema.Version, resource.Schema.PluralName, resource.ID) + "?action=" + url.QueryEscape(action)
 }
