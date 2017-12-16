@@ -27,11 +27,11 @@ func TemplateFormatter(apiContext *types.APIContext, resource *types.RawResource
 	resource.Links["catalog"] = apiContext.URLBuilder.ResourceLinkByID(catalogSchema, catalogName)
 }
 
-func CatalogFormatter(apiContext *types.APIContext, resource *types.RawResource) {
+func Formatter(apiContext *types.APIContext, resource *types.RawResource) {
 	resource.Actions["refresh"] = apiContext.URLBuilder.Action("refresh", resource)
 }
 
-func CataLogRefreshActionHandler(actionName string, action *types.Action, apiContext *types.APIContext) error {
+func RefreshActionHandler(actionName string, action *types.Action, apiContext *types.APIContext) error {
 	if actionName != "refresh" {
 		return httperror.NewAPIError(httperror.NotFound, "not found")
 	}

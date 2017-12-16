@@ -65,8 +65,8 @@ func Catalog(schemas *types.Schemas) {
 	schema.ResourceActions = map[string]types.Action{
 		"refresh": {},
 	}
-	schema.Formatter = catalog.CatalogFormatter
-	schema.ActionHandler = catalog.CataLogRefreshActionHandler
+	schema.Formatter = catalog.Formatter
+	schema.ActionHandler = catalog.RefreshActionHandler
 }
 
 func ClusterRegistrationTokens(schemas *types.Schemas) {
