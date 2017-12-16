@@ -24,12 +24,12 @@ func run() error {
 		return err
 	}
 
-	cluster, err := config.NewManagementContext(*kubeConfig)
+	management, err := config.NewManagementContext(*kubeConfig)
 	if err != nil {
 		return err
 	}
 
-	handler, err := server.New(context.Background(), cluster)
+	handler, err := server.New(context.Background(), management)
 	if err != nil {
 		return err
 	}
