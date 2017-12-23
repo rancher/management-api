@@ -32,17 +32,16 @@ const (
 	ReplicationControllerFieldProjectID                     = "projectId"
 	ReplicationControllerFieldPullSecrets                   = "pullSecrets"
 	ReplicationControllerFieldRemoved                       = "removed"
-	ReplicationControllerFieldResourcePath                  = "resourcePath"
 	ReplicationControllerFieldRestart                       = "restart"
 	ReplicationControllerFieldRunAsNonRoot                  = "runAsNonRoot"
 	ReplicationControllerFieldScale                         = "scale"
 	ReplicationControllerFieldSchedulerName                 = "schedulerName"
+	ReplicationControllerFieldScheduling                    = "scheduling"
 	ReplicationControllerFieldServiceAccountName            = "serviceAccountName"
 	ReplicationControllerFieldState                         = "state"
 	ReplicationControllerFieldStatus                        = "status"
 	ReplicationControllerFieldSubdomain                     = "subdomain"
 	ReplicationControllerFieldTerminationGracePeriodSeconds = "terminationGracePeriodSeconds"
-	ReplicationControllerFieldTolerations                   = "tolerations"
 	ReplicationControllerFieldTransitioning                 = "transitioning"
 	ReplicationControllerFieldTransitioningMessage          = "transitioningMessage"
 	ReplicationControllerFieldUid                           = "uid"
@@ -58,7 +57,7 @@ type ReplicationController struct {
 	Annotations                   map[string]string            `json:"annotations,omitempty"`
 	AutomountServiceAccountToken  *bool                        `json:"automountServiceAccountToken,omitempty"`
 	BatchSize                     string                       `json:"batchSize,omitempty"`
-	Containers                    map[string]Container         `json:"containers,omitempty"`
+	Containers                    []Container                  `json:"containers,omitempty"`
 	Created                       string                       `json:"created,omitempty"`
 	DNSPolicy                     string                       `json:"dnsPolicy,omitempty"`
 	DeploymentStrategy            *DeployStrategy              `json:"deploymentStrategy,omitempty"`
@@ -80,17 +79,16 @@ type ReplicationController struct {
 	ProjectID                     string                       `json:"projectId,omitempty"`
 	PullSecrets                   []LocalObjectReference       `json:"pullSecrets,omitempty"`
 	Removed                       string                       `json:"removed,omitempty"`
-	ResourcePath                  string                       `json:"resourcePath,omitempty"`
 	Restart                       string                       `json:"restart,omitempty"`
 	RunAsNonRoot                  *bool                        `json:"runAsNonRoot,omitempty"`
 	Scale                         *int64                       `json:"scale,omitempty"`
 	SchedulerName                 string                       `json:"schedulerName,omitempty"`
+	Scheduling                    *Scheduling                  `json:"scheduling,omitempty"`
 	ServiceAccountName            string                       `json:"serviceAccountName,omitempty"`
 	State                         string                       `json:"state,omitempty"`
 	Status                        *ReplicationControllerStatus `json:"status,omitempty"`
 	Subdomain                     string                       `json:"subdomain,omitempty"`
 	TerminationGracePeriodSeconds *int64                       `json:"terminationGracePeriodSeconds,omitempty"`
-	Tolerations                   []Toleration                 `json:"tolerations,omitempty"`
 	Transitioning                 string                       `json:"transitioning,omitempty"`
 	TransitioningMessage          string                       `json:"transitioningMessage,omitempty"`
 	Uid                           *int64                       `json:"uid,omitempty"`

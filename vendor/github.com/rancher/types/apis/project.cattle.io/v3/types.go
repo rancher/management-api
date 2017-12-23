@@ -6,8 +6,9 @@ import (
 )
 
 type WorkloadSpec struct {
-	DeployConfig DeployConfig
-	Template     v1.PodTemplateSpec
+	DeployConfig DeployConfig       `json:"deployConfig"`
+	Template     v1.PodTemplateSpec `json:"template"`
+	ServiceLinks []Link             `json:"serviceLinks"`
 }
 
 type WorkloadStatus struct {
@@ -21,36 +22,97 @@ type Workload struct {
 }
 
 type DeployConfig struct {
-	Scale              int64
-	BatchSize          string
-	DeploymentStrategy *DeployStrategy
+	Scale              int64           `json:"scale"`
+	BatchSize          string          `json:"batchSize"`
+	DeploymentStrategy *DeployStrategy `json:"deploymentStrategy"`
 }
 
 type DeploymentParallelConfig struct {
-	StartFirst              bool
-	MinReadySeconds         int64
-	ProgressDeadlineSeconds int64
+	StartFirst              bool  `json:"startFirst"`
+	MinReadySeconds         int64 `json:"minReadySeconds"`
+	ProgressDeadlineSeconds int64 `json:"processDeadlineSeconds"`
 }
 
 type DeploymentJobConfig struct {
-	BatchLimit            int64
-	ActiveDeadlineSeconds int64
-	OnDelete              bool
+	BatchLimit            int64 `json:"batchLimit"`
+	ActiveDeadlineSeconds int64 `json:"activeDeadlineSeconds"`
+	OnDelete              bool  `json:"onDelete"`
 }
 
 type DeploymentOrderedConfig struct {
-	PartitionSize int64
-	OnDelete      bool
+	PartitionSize int64 `json:"partitionSize"`
+	OnDelete      bool  `json:"onDelete"`
 }
 
 type DeploymentGlobalConfig struct {
-	OnDelete bool
+	OnDelete bool `json:"onDelete"`
 }
 
 type DeployStrategy struct {
-	Kind           string
-	ParallelConfig *DeploymentParallelConfig
-	JobConfig      *DeploymentJobConfig
-	OrderedConfig  *DeploymentOrderedConfig
-	GlobalConfig   *DeploymentGlobalConfig
+	Kind           string                    `json:"kind"`
+	ParallelConfig *DeploymentParallelConfig `json:"parallelConfig"`
+	JobConfig      *DeploymentJobConfig      `json:"jobConfig"`
+	OrderedConfig  *DeploymentOrderedConfig  `json:"orderedConfig"`
+	GlobalConfig   *DeploymentGlobalConfig   `json:"globalConfig"`
+}
+
+type Link struct {
+	Name  string `json:"name"`
+	Alias string `json:"alias"`
+}
+
+type ServiceAccountToken struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	AccountName string `json:"accountName"`
+	AccountUID  string `json:"accountUid"`
+	Token       string `json:"token" norman:"writeOnly"`
+	CACRT       string `json:"caCrt"`
+	NamespaceID string `json:"namespaceId" norman:"type=reference[namespace]"`
+}
+
+type DockerCredential struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Registries map[string]RegistryCredential `json:"registries"`
+}
+
+type RegistryCredential struct {
+	Username string `json:"username"`
+	Password string `json:"password" norman:"writeOnly"`
+	Auth     string `json:"auth"`
+}
+
+type Certificate struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Certs                   string `json:"certs"`
+	Key                     string `json:"key" norman:"writeOnly"`
+	CertFingerprint         string `json:"certFingerprint"`
+	CN                      string `json:"cn"`
+	Version                 string `json:"version"`
+	Issuer                  string `json:"issuer"`
+	IssuedAt                string `json:"issuedAt"`
+	Algorithm               string `json:"Algorithm"`
+	SerialNumber            string `json:"serialNumber"`
+	KeySize                 string `json:"keySize"`
+	SubjectAlternativeNames string `json:"subjectAlternativeNames"`
+}
+
+type BasicAuth struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	Username string `json:"username"`
+	Password string `json:"password" norman:"writeOnly"`
+}
+
+type SSHAuth struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+
+	PrivateKey string `json:"privateKey"`
 }

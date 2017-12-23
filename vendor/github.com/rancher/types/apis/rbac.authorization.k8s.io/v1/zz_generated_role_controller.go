@@ -24,8 +24,9 @@ var (
 	RoleResource = metav1.APIResource{
 		Name:         "roles",
 		SingularName: "role",
-		Namespaced:   false,
-		Kind:         RoleGroupVersionKind.Kind,
+		Namespaced:   true,
+
+		Kind: RoleGroupVersionKind.Kind,
 	}
 )
 
@@ -189,6 +190,12 @@ func (s *roleClient) List(opts metav1.ListOptions) (*RoleList, error) {
 
 func (s *roleClient) Watch(opts metav1.ListOptions) (watch.Interface, error) {
 	return s.objectClient.Watch(opts)
+}
+
+// Patch applies the patch and returns the patched deployment.
+func (s *roleClient) Patch(o *v1.Role, data []byte, subresources ...string) (*v1.Role, error) {
+	obj, err := s.objectClient.Patch(o.Name, o, data, subresources...)
+	return obj.(*v1.Role), err
 }
 
 func (s *roleClient) DeleteCollection(deleteOpts *metav1.DeleteOptions, listOpts metav1.ListOptions) error {

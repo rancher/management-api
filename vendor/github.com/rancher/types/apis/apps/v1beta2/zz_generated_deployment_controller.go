@@ -24,8 +24,9 @@ var (
 	DeploymentResource = metav1.APIResource{
 		Name:         "deployments",
 		SingularName: "deployment",
-		Namespaced:   false,
-		Kind:         DeploymentGroupVersionKind.Kind,
+		Namespaced:   true,
+
+		Kind: DeploymentGroupVersionKind.Kind,
 	}
 )
 
@@ -189,6 +190,12 @@ func (s *deploymentClient) List(opts metav1.ListOptions) (*DeploymentList, error
 
 func (s *deploymentClient) Watch(opts metav1.ListOptions) (watch.Interface, error) {
 	return s.objectClient.Watch(opts)
+}
+
+// Patch applies the patch and returns the patched deployment.
+func (s *deploymentClient) Patch(o *v1beta2.Deployment, data []byte, subresources ...string) (*v1beta2.Deployment, error) {
+	obj, err := s.objectClient.Patch(o.Name, o, data, subresources...)
+	return obj.(*v1beta2.Deployment), err
 }
 
 func (s *deploymentClient) DeleteCollection(deleteOpts *metav1.DeleteOptions, listOpts metav1.ListOptions) error {
