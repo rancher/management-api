@@ -30,16 +30,15 @@ const (
 	PodFieldProjectID                     = "projectId"
 	PodFieldPullSecrets                   = "pullSecrets"
 	PodFieldRemoved                       = "removed"
-	PodFieldResourcePath                  = "resourcePath"
 	PodFieldRestart                       = "restart"
 	PodFieldRunAsNonRoot                  = "runAsNonRoot"
 	PodFieldSchedulerName                 = "schedulerName"
+	PodFieldScheduling                    = "scheduling"
 	PodFieldServiceAccountName            = "serviceAccountName"
 	PodFieldState                         = "state"
 	PodFieldStatus                        = "status"
 	PodFieldSubdomain                     = "subdomain"
 	PodFieldTerminationGracePeriodSeconds = "terminationGracePeriodSeconds"
-	PodFieldTolerations                   = "tolerations"
 	PodFieldTransitioning                 = "transitioning"
 	PodFieldTransitioningMessage          = "transitioningMessage"
 	PodFieldUid                           = "uid"
@@ -53,7 +52,7 @@ type Pod struct {
 	ActiveDeadlineSeconds         *int64                 `json:"activeDeadlineSeconds,omitempty"`
 	Annotations                   map[string]string      `json:"annotations,omitempty"`
 	AutomountServiceAccountToken  *bool                  `json:"automountServiceAccountToken,omitempty"`
-	Containers                    map[string]Container   `json:"containers,omitempty"`
+	Containers                    []Container            `json:"containers,omitempty"`
 	Created                       string                 `json:"created,omitempty"`
 	DNSPolicy                     string                 `json:"dnsPolicy,omitempty"`
 	Finalizers                    []string               `json:"finalizers,omitempty"`
@@ -74,16 +73,15 @@ type Pod struct {
 	ProjectID                     string                 `json:"projectId,omitempty"`
 	PullSecrets                   []LocalObjectReference `json:"pullSecrets,omitempty"`
 	Removed                       string                 `json:"removed,omitempty"`
-	ResourcePath                  string                 `json:"resourcePath,omitempty"`
 	Restart                       string                 `json:"restart,omitempty"`
 	RunAsNonRoot                  *bool                  `json:"runAsNonRoot,omitempty"`
 	SchedulerName                 string                 `json:"schedulerName,omitempty"`
+	Scheduling                    *Scheduling            `json:"scheduling,omitempty"`
 	ServiceAccountName            string                 `json:"serviceAccountName,omitempty"`
 	State                         string                 `json:"state,omitempty"`
 	Status                        *PodStatus             `json:"status,omitempty"`
 	Subdomain                     string                 `json:"subdomain,omitempty"`
 	TerminationGracePeriodSeconds *int64                 `json:"terminationGracePeriodSeconds,omitempty"`
-	Tolerations                   []Toleration           `json:"tolerations,omitempty"`
 	Transitioning                 string                 `json:"transitioning,omitempty"`
 	TransitioningMessage          string                 `json:"transitioningMessage,omitempty"`
 	Uid                           *int64                 `json:"uid,omitempty"`

@@ -8,6 +8,7 @@ const (
 	TemplateVersionType                       = "templateVersion"
 	TemplateVersionFieldAnnotations           = "annotations"
 	TemplateVersionFieldCreated               = "created"
+	TemplateVersionFieldExternalID            = "externalId"
 	TemplateVersionFieldFiles                 = "files"
 	TemplateVersionFieldFinalizers            = "finalizers"
 	TemplateVersionFieldLabels                = "labels"
@@ -18,13 +19,13 @@ const (
 	TemplateVersionFieldQuestions             = "questions"
 	TemplateVersionFieldReadme                = "readme"
 	TemplateVersionFieldRemoved               = "removed"
-	TemplateVersionFieldResourcePath          = "resourcePath"
 	TemplateVersionFieldRevision              = "revision"
 	TemplateVersionFieldState                 = "state"
 	TemplateVersionFieldStatus                = "status"
 	TemplateVersionFieldTransitioning         = "transitioning"
 	TemplateVersionFieldTransitioningMessage  = "transitioningMessage"
 	TemplateVersionFieldUpgradeFrom           = "upgradeFrom"
+	TemplateVersionFieldUpgradeVersionLinks   = "upgradeVersionLinks"
 	TemplateVersionFieldUuid                  = "uuid"
 	TemplateVersionFieldVersion               = "version"
 )
@@ -33,6 +34,7 @@ type TemplateVersion struct {
 	types.Resource
 	Annotations           map[string]string      `json:"annotations,omitempty"`
 	Created               string                 `json:"created,omitempty"`
+	ExternalID            string                 `json:"externalId,omitempty"`
 	Files                 []File                 `json:"files,omitempty"`
 	Finalizers            []string               `json:"finalizers,omitempty"`
 	Labels                map[string]string      `json:"labels,omitempty"`
@@ -43,13 +45,13 @@ type TemplateVersion struct {
 	Questions             []Question             `json:"questions,omitempty"`
 	Readme                string                 `json:"readme,omitempty"`
 	Removed               string                 `json:"removed,omitempty"`
-	ResourcePath          string                 `json:"resourcePath,omitempty"`
 	Revision              *int64                 `json:"revision,omitempty"`
 	State                 string                 `json:"state,omitempty"`
 	Status                *TemplateVersionStatus `json:"status,omitempty"`
 	Transitioning         string                 `json:"transitioning,omitempty"`
 	TransitioningMessage  string                 `json:"transitioningMessage,omitempty"`
 	UpgradeFrom           string                 `json:"upgradeFrom,omitempty"`
+	UpgradeVersionLinks   map[string]string      `json:"upgradeVersionLinks,omitempty"`
 	Uuid                  string                 `json:"uuid,omitempty"`
 	Version               string                 `json:"version,omitempty"`
 }

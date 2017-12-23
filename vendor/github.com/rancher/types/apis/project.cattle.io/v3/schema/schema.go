@@ -22,6 +22,8 @@ var (
 
 	Schemas = factory.Schemas(&Version).
 		// Namespace must be first
+		Init(secretTypes).
+		Init(serviceTypes).
 		Init(namespaceTypes).
 		Init(podTypes).
 		Init(deploymentTypes).
@@ -46,14 +48,18 @@ func NamespaceTypes(version *types.APIVersion, schemas *types.Schemas) *types.Sc
 		).
 		AddMapperForType(version, v1.Namespace{},
 			&m.LabelField{Field: "projectId"},
+			&m.AnnotationField{Field: "externalId"},
+			&m.AnnotationField{Field: "templates", Object: true},
+			&m.AnnotationField{Field: "prune"},
+			&m.AnnotationField{Field: "answers", Object: true},
 		).
 		MustImport(version, v1.Namespace{}, struct {
-			ProjectID  string `norman:"type=reference[/v3/schemas/project]"`
-			Templates  map[string]string
-			Answers    map[string]interface{}
-			Prune      bool
-			ExternalID string
-			Tags       []string
+			ProjectID  string                 `norman:"type=reference[/v3/schemas/project]"`
+			Templates  map[string]string      `json:"templates"`
+			Answers    map[string]interface{} `json:"answers"`
+			Prune      bool                   `json:"prune"`
+			ExternalID string                 `json:"externalId"`
+			Tags       []string               `json:"tags"`
 		}{})
 }
 
@@ -80,19 +86,19 @@ func statefulSetTypes(schemas *types.Schemas) *types.Schemas {
 				To:   "deploymentStrategy/orderedConfig/partition",
 			},
 			m.SetValue{
-				From:  "updateStrategy/type",
+				Field: "updateStrategy/type",
 				IfEq:  "OnDelete",
 				Value: true,
 				To:    "deploymentStrategy/orderedConfig/onDelete",
 			},
 			m.SetValue{
-				From:  "podManagementPolicy",
+				Field: "podManagementPolicy",
 				IfEq:  "Parallel",
 				Value: "Parallel",
 				To:    "deploymentStrategy/kind",
 			},
 			m.SetValue{
-				From:  "podManagementPolicy",
+				Field: "podManagementPolicy",
 				IfEq:  "OrderedReady",
 				Value: "Ordered",
 				To:    "deploymentStrategy/kind",
@@ -153,7 +159,7 @@ func daemonSet(schemas *types.Schemas) *types.Schemas {
 	return schemas.
 		AddMapperForType(&Version, v1beta2.DaemonSetSpec{},
 			m.SetValue{
-				From:  "updateStrategy/type",
+				Field: "updateStrategy/type",
 				IfEq:  "OnDelete",
 				Value: true,
 				To:    "deploymentStrategy/globalConfig/onDelete",
@@ -259,14 +265,11 @@ func podTypes(schemas *types.Schemas) *types.Schemas {
 			mapper.NamespaceMapper{},
 			mapper.InitContainerMapper{},
 			mapper.SchedulingMapper{},
+			m.Move{From: "tolerations", To: "scheduling/tolerations", DestDefined: true},
 			&m.Embed{Field: "securityContext"},
 			&m.Drop{Field: "serviceAccount"},
 			&m.SliceToMap{
 				Field: "volumes",
-				Key:   "name",
-			},
-			&m.SliceToMap{
-				Field: "containers",
 				Key:   "name",
 			},
 			&m.SliceToMap{
@@ -288,19 +291,53 @@ func podTypes(schemas *types.Schemas) *types.Schemas {
 		MustImport(&Version, v1.Handler{}, handlerOverride{}).
 		MustImport(&Version, v1.Probe{}, handlerOverride{}).
 		MustImport(&Version, v1.Container{}, struct {
-			Scheduling      *Scheduling
 			Resources       *Resources
 			Environment     map[string]string
 			EnvironmentFrom []EnvironmentFrom
 			InitContainer   bool
 		}{}).
 		MustImport(&Version, v1.PodSpec{}, struct {
-			NodeName string `norman:"type=reference[node]"`
-			Net      string
-			PID      string
-			IPC      string
+			Scheduling *Scheduling
+			NodeName   string `norman:"type=reference[node]"`
+			Net        string
+			PID        string
+			IPC        string
 		}{}).
 		MustImport(&Version, v1.Pod{}, projectOverride{}, struct {
 			WorkloadID string `norman:"type=reference[workload]"`
+		}{})
+}
+
+func serviceTypes(schemas *types.Schemas) *types.Schemas {
+	return schemas.
+		TypeName("endpoint", v1.Endpoints{}).
+		AddMapperForType(&Version, v1.ServiceSpec{},
+			&m.Move{From: "type", To: "serviceKind"},
+			&m.Move{From: "externalName", To: "hostname"},
+			&m.Move{From: "clusterIP", To: "clusterIp"},
+			ServiceKindMapper{},
+		).
+		AddMapperForType(&Version, v1.Service{},
+			&m.LabelField{Field: "workloadId"},
+			&m.Drop{Field: "status"},
+			&m.Move{From: "serviceKind", To: "kind"},
+			&mapper.NamespaceIDMapper{},
+			&m.AnnotationField{Field: "targetWorkloadIds", Object: true},
+			&m.AnnotationField{Field: "targetServiceIds", Object: true},
+		).
+		AddMapperForType(&Version, v1.Endpoints{},
+			&EndpointAddressMapper{},
+			&mapper.NamespaceIDMapper{},
+		).
+		MustImport(&Version, v1.Service{}, projectOverride{}, struct {
+			WorkloadID        string `json:"workloadId" norman:"type=reference[workload]"`
+			TargetWorkloadIDs string `json:"targetWorkloadIds" norman:"type=array[reference[workload]]"`
+			TargetServiceIDs  string `json:"targetServiceIds" norman:"type=array[reference[service]]"`
+			Kind              string `json:"kind" norman:"type=enum,options=Alias|ARecord|CName|ClusterIP|NodeIP|LoadBalancer"`
+		}{}).
+		MustImportAndCustomize(&Version, v1.Endpoints{}, func(schema *types.Schema) {
+			schema.CodeName = "Endpoint"
+		}, projectOverride{}, struct {
+			Targets []Target `json:"targets"`
 		}{})
 }

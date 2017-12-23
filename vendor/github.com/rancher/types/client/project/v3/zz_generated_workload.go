@@ -32,17 +32,17 @@ const (
 	WorkloadFieldProjectID                     = "projectId"
 	WorkloadFieldPullSecrets                   = "pullSecrets"
 	WorkloadFieldRemoved                       = "removed"
-	WorkloadFieldResourcePath                  = "resourcePath"
 	WorkloadFieldRestart                       = "restart"
 	WorkloadFieldRunAsNonRoot                  = "runAsNonRoot"
 	WorkloadFieldScale                         = "scale"
 	WorkloadFieldSchedulerName                 = "schedulerName"
+	WorkloadFieldScheduling                    = "scheduling"
 	WorkloadFieldServiceAccountName            = "serviceAccountName"
+	WorkloadFieldServiceLinks                  = "serviceLinks"
 	WorkloadFieldState                         = "state"
 	WorkloadFieldStatus                        = "status"
 	WorkloadFieldSubdomain                     = "subdomain"
 	WorkloadFieldTerminationGracePeriodSeconds = "terminationGracePeriodSeconds"
-	WorkloadFieldTolerations                   = "tolerations"
 	WorkloadFieldTransitioning                 = "transitioning"
 	WorkloadFieldTransitioningMessage          = "transitioningMessage"
 	WorkloadFieldUid                           = "uid"
@@ -58,7 +58,7 @@ type Workload struct {
 	Annotations                   map[string]string      `json:"annotations,omitempty"`
 	AutomountServiceAccountToken  *bool                  `json:"automountServiceAccountToken,omitempty"`
 	BatchSize                     string                 `json:"batchSize,omitempty"`
-	Containers                    map[string]Container   `json:"containers,omitempty"`
+	Containers                    []Container            `json:"containers,omitempty"`
 	Created                       string                 `json:"created,omitempty"`
 	DNSPolicy                     string                 `json:"dnsPolicy,omitempty"`
 	DeploymentStrategy            *DeployStrategy        `json:"deploymentStrategy,omitempty"`
@@ -80,17 +80,17 @@ type Workload struct {
 	ProjectID                     string                 `json:"projectId,omitempty"`
 	PullSecrets                   []LocalObjectReference `json:"pullSecrets,omitempty"`
 	Removed                       string                 `json:"removed,omitempty"`
-	ResourcePath                  string                 `json:"resourcePath,omitempty"`
 	Restart                       string                 `json:"restart,omitempty"`
 	RunAsNonRoot                  *bool                  `json:"runAsNonRoot,omitempty"`
 	Scale                         *int64                 `json:"scale,omitempty"`
 	SchedulerName                 string                 `json:"schedulerName,omitempty"`
+	Scheduling                    *Scheduling            `json:"scheduling,omitempty"`
 	ServiceAccountName            string                 `json:"serviceAccountName,omitempty"`
+	ServiceLinks                  []Link                 `json:"serviceLinks,omitempty"`
 	State                         string                 `json:"state,omitempty"`
 	Status                        *WorkloadStatus        `json:"status,omitempty"`
 	Subdomain                     string                 `json:"subdomain,omitempty"`
 	TerminationGracePeriodSeconds *int64                 `json:"terminationGracePeriodSeconds,omitempty"`
-	Tolerations                   []Toleration           `json:"tolerations,omitempty"`
 	Transitioning                 string                 `json:"transitioning,omitempty"`
 	TransitioningMessage          string                 `json:"transitioningMessage,omitempty"`
 	Uid                           *int64                 `json:"uid,omitempty"`

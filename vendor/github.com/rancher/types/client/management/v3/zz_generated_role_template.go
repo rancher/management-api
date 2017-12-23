@@ -9,12 +9,14 @@ const (
 	RoleTemplateFieldAnnotations     = "annotations"
 	RoleTemplateFieldBuiltin         = "builtin"
 	RoleTemplateFieldCreated         = "created"
+	RoleTemplateFieldExternal        = "external"
 	RoleTemplateFieldFinalizers      = "finalizers"
+	RoleTemplateFieldHidden          = "hidden"
+	RoleTemplateFieldId              = "id"
 	RoleTemplateFieldLabels          = "labels"
 	RoleTemplateFieldName            = "name"
 	RoleTemplateFieldOwnerReferences = "ownerReferences"
 	RoleTemplateFieldRemoved         = "removed"
-	RoleTemplateFieldResourcePath    = "resourcePath"
 	RoleTemplateFieldRoleTemplateIds = "roleTemplateIds"
 	RoleTemplateFieldRules           = "rules"
 	RoleTemplateFieldUuid            = "uuid"
@@ -25,12 +27,14 @@ type RoleTemplate struct {
 	Annotations     map[string]string `json:"annotations,omitempty"`
 	Builtin         *bool             `json:"builtin,omitempty"`
 	Created         string            `json:"created,omitempty"`
+	External        *bool             `json:"external,omitempty"`
 	Finalizers      []string          `json:"finalizers,omitempty"`
+	Hidden          *bool             `json:"hidden,omitempty"`
+	Id              string            `json:"id,omitempty"`
 	Labels          map[string]string `json:"labels,omitempty"`
 	Name            string            `json:"name,omitempty"`
 	OwnerReferences []OwnerReference  `json:"ownerReferences,omitempty"`
 	Removed         string            `json:"removed,omitempty"`
-	ResourcePath    string            `json:"resourcePath,omitempty"`
 	RoleTemplateIds []string          `json:"roleTemplateIds,omitempty"`
 	Rules           []PolicyRule      `json:"rules,omitempty"`
 	Uuid            string            `json:"uuid,omitempty"`

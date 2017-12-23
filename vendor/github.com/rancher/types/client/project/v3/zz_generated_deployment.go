@@ -33,18 +33,17 @@ const (
 	DeploymentFieldProjectID                     = "projectId"
 	DeploymentFieldPullSecrets                   = "pullSecrets"
 	DeploymentFieldRemoved                       = "removed"
-	DeploymentFieldResourcePath                  = "resourcePath"
 	DeploymentFieldRestart                       = "restart"
 	DeploymentFieldRevisionHistoryLimit          = "revisionHistoryLimit"
 	DeploymentFieldRunAsNonRoot                  = "runAsNonRoot"
 	DeploymentFieldScale                         = "scale"
 	DeploymentFieldSchedulerName                 = "schedulerName"
+	DeploymentFieldScheduling                    = "scheduling"
 	DeploymentFieldServiceAccountName            = "serviceAccountName"
 	DeploymentFieldState                         = "state"
 	DeploymentFieldStatus                        = "status"
 	DeploymentFieldSubdomain                     = "subdomain"
 	DeploymentFieldTerminationGracePeriodSeconds = "terminationGracePeriodSeconds"
-	DeploymentFieldTolerations                   = "tolerations"
 	DeploymentFieldTransitioning                 = "transitioning"
 	DeploymentFieldTransitioningMessage          = "transitioningMessage"
 	DeploymentFieldUid                           = "uid"
@@ -60,7 +59,7 @@ type Deployment struct {
 	Annotations                   map[string]string      `json:"annotations,omitempty"`
 	AutomountServiceAccountToken  *bool                  `json:"automountServiceAccountToken,omitempty"`
 	BatchSize                     string                 `json:"batchSize,omitempty"`
-	Containers                    map[string]Container   `json:"containers,omitempty"`
+	Containers                    []Container            `json:"containers,omitempty"`
 	Created                       string                 `json:"created,omitempty"`
 	DNSPolicy                     string                 `json:"dnsPolicy,omitempty"`
 	DeploymentStrategy            *DeployStrategy        `json:"deploymentStrategy,omitempty"`
@@ -83,18 +82,17 @@ type Deployment struct {
 	ProjectID                     string                 `json:"projectId,omitempty"`
 	PullSecrets                   []LocalObjectReference `json:"pullSecrets,omitempty"`
 	Removed                       string                 `json:"removed,omitempty"`
-	ResourcePath                  string                 `json:"resourcePath,omitempty"`
 	Restart                       string                 `json:"restart,omitempty"`
 	RevisionHistoryLimit          *int64                 `json:"revisionHistoryLimit,omitempty"`
 	RunAsNonRoot                  *bool                  `json:"runAsNonRoot,omitempty"`
 	Scale                         *int64                 `json:"scale,omitempty"`
 	SchedulerName                 string                 `json:"schedulerName,omitempty"`
+	Scheduling                    *Scheduling            `json:"scheduling,omitempty"`
 	ServiceAccountName            string                 `json:"serviceAccountName,omitempty"`
 	State                         string                 `json:"state,omitempty"`
 	Status                        *DeploymentStatus      `json:"status,omitempty"`
 	Subdomain                     string                 `json:"subdomain,omitempty"`
 	TerminationGracePeriodSeconds *int64                 `json:"terminationGracePeriodSeconds,omitempty"`
-	Tolerations                   []Toleration           `json:"tolerations,omitempty"`
 	Transitioning                 string                 `json:"transitioning,omitempty"`
 	TransitioningMessage          string                 `json:"transitioningMessage,omitempty"`
 	Uid                           *int64                 `json:"uid,omitempty"`

@@ -19,13 +19,11 @@ type RancherKubernetesEngineConfig struct {
 	Authorization AuthzConfig `yaml:"authorization" json:"authorization,omitempty"`
 	// Enable/disable strict docker version checking
 	IgnoreDockerVersion bool `yaml:"ignore_docker_version" json:"ignoreDockerVersion"`
-	// Enable/disable Pod Security Policy
-	DisablePSP bool `yaml:"disable_psp" json:"disablePSP,omitempty"`
 }
 
 type RKEConfigNode struct {
 	// Name of the host provisioned via docker machine
-	MachineName string `yaml:"machine_name" json:"machineName, omitempty"`
+	MachineName string `yaml:"machine_name,omitempty" json:"machineName,omitempty"`
 	// IP or FQDN that is fully resolvable and used for SSH communication
 	Address string `yaml:"address" json:"address,omitempty"`
 	// Optional - Internal address that will be used for components communication
@@ -69,6 +67,8 @@ type KubeAPIService struct {
 	BaseService `yaml:",inline" json:",inline"`
 	// Virtual IP range that will be used by Kubernetes services
 	ServiceClusterIPRange string `yaml:"service_cluster_ip_range" json:"serviceClusterIpRange,omitempty"`
+	// Enabled/Disable PodSecurityPolicy
+	PodSecurityPolicy bool `yaml:"pod_security_policy" json:"podSecurityPolicy,omitempty"`
 }
 
 type KubeControllerService struct {

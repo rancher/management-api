@@ -11,13 +11,13 @@ const (
 	UserFieldFinalizers         = "finalizers"
 	UserFieldId                 = "id"
 	UserFieldLabels             = "labels"
+	UserFieldMe                 = "me"
 	UserFieldMustChangePassword = "mustChangePassword"
 	UserFieldName               = "name"
 	UserFieldOwnerReferences    = "ownerReferences"
 	UserFieldPassword           = "password"
 	UserFieldPrincipalIDs       = "principalIds"
 	UserFieldRemoved            = "removed"
-	UserFieldResourcePath       = "resourcePath"
 	UserFieldUserName           = "userName"
 	UserFieldUuid               = "uuid"
 )
@@ -29,13 +29,13 @@ type User struct {
 	Finalizers         []string          `json:"finalizers,omitempty"`
 	Id                 string            `json:"id,omitempty"`
 	Labels             map[string]string `json:"labels,omitempty"`
+	Me                 *bool             `json:"me,omitempty"`
 	MustChangePassword *bool             `json:"mustChangePassword,omitempty"`
 	Name               string            `json:"name,omitempty"`
 	OwnerReferences    []OwnerReference  `json:"ownerReferences,omitempty"`
 	Password           string            `json:"password,omitempty"`
 	PrincipalIDs       []string          `json:"principalIds,omitempty"`
 	Removed            string            `json:"removed,omitempty"`
-	ResourcePath       string            `json:"resourcePath,omitempty"`
 	UserName           string            `json:"userName,omitempty"`
 	Uuid               string            `json:"uuid,omitempty"`
 }
@@ -55,6 +55,8 @@ type UserOperations interface {
 	Update(existing *User, updates interface{}) (*User, error)
 	ByID(id string) (*User, error)
 	Delete(container *User) error
+
+	ActionChangepassword(*User, *ChangePasswordInput) (*User, error)
 }
 
 func newUserClient(apiClient *Client) *UserClient {
@@ -100,4 +102,13 @@ func (c *UserClient) ByID(id string) (*User, error) {
 
 func (c *UserClient) Delete(container *User) error {
 	return c.apiClient.Ops.DoResourceDelete(UserType, &container.Resource)
+}
+
+func (c *UserClient) ActionChangepassword(resource *User, input *ChangePasswordInput) (*User, error) {
+
+	resp := &User{}
+
+	err := c.apiClient.Ops.DoAction(UserType, "changepassword", &resource.Resource, input, resp)
+
+	return resp, err
 }
