@@ -5,9 +5,11 @@ import (
 
 	"github.com/rancher/cluster-api/api/pod"
 	"github.com/rancher/cluster-api/api/workload"
+	"github.com/rancher/cluster-api/store/secret"
 	"github.com/rancher/norman/pkg/subscribe"
 	"github.com/rancher/norman/store/crd"
 	"github.com/rancher/norman/store/proxy"
+	"github.com/rancher/norman/store/subtype"
 	"github.com/rancher/norman/store/transform"
 	"github.com/rancher/norman/types"
 	clusterSchema "github.com/rancher/types/apis/cluster.cattle.io/v3/schema"
@@ -22,8 +24,11 @@ func Schemas(ctx context.Context, app *config.ClusterContext, schemas *types.Sch
 	DaemonSet(app.UnversionedClient, schemas)
 	Deployment(app.UnversionedClient, schemas)
 	Endpoint(app.UnversionedClient, schemas)
+	Ingress(app.UnversionedClient, schemas)
 	Namespace(app.UnversionedClient, schemas)
 	Node(app.UnversionedClient, schemas)
+	PersistentVolume(app.UnversionedClient, schemas)
+	PersistentVolumeClaims(app.UnversionedClient, schemas)
 	Pod(app.UnversionedClient, schemas)
 	ReplicaSet(app.UnversionedClient, schemas)
 	ReplicationController(app.UnversionedClient, schemas)
@@ -67,6 +72,26 @@ func Node(k8sClient rest.Interface, schemas *types.Schemas) {
 		"v1",
 		"Node",
 		"nodes")
+}
+
+func PersistentVolume(k8sClient rest.Interface, schemas *types.Schemas) {
+	schema := schemas.Schema(&clusterSchema.Version, "persistentVolume")
+	schema.Store = proxy.NewProxyStore(k8sClient,
+		[]string{"api"},
+		"",
+		"v1",
+		"PersistentVolume",
+		"persistentvolumes")
+}
+
+func PersistentVolumeClaims(k8sClient rest.Interface, schemas *types.Schemas) {
+	schema := schemas.Schema(&schema.Version, "persistentVolumeClaim")
+	schema.Store = proxy.NewProxyStore(k8sClient,
+		[]string{"api"},
+		"",
+		"v1",
+		"PersistentVolumeClaim",
+		"persistentvolumeclaims")
 }
 
 func DaemonSet(k8sClient rest.Interface, schemas *types.Schemas) {
@@ -143,6 +168,16 @@ func Service(k8sClient rest.Interface, schemas *types.Schemas) {
 		"services")
 }
 
+func Ingress(k8sClient rest.Interface, schemas *types.Schemas) {
+	schema := schemas.Schema(&schema.Version, "ingress")
+	schema.Store = proxy.NewProxyStore(k8sClient,
+		[]string{"apis"},
+		"extensions",
+		"v1beta1",
+		"Ingress",
+		"ingresses")
+}
+
 func Endpoint(k8sClient rest.Interface, schemas *types.Schemas) {
 	schema := schemas.Schema(&schema.Version, "endpoint")
 	schema.Store = proxy.NewProxyStore(k8sClient,
@@ -154,13 +189,14 @@ func Endpoint(k8sClient rest.Interface, schemas *types.Schemas) {
 }
 
 func Secret(k8sClient rest.Interface, schemas *types.Schemas) {
-	schema := schemas.Schema(&schema.Version, "secret")
-	schema.Store = proxy.NewProxyStore(k8sClient,
-		[]string{"api"},
-		"",
-		"v1",
-		"Secret",
-		"secrets")
+	schema := schemas.Schema(&schema.Version, "namespacedSecret")
+	schema.Store = secret.NewSecretStore(k8sClient, schemas)
+
+	for _, subSchema := range schemas.Schemas() {
+		if subSchema.BaseType == "secret" && subSchema.ID != "namespacedSecret" && subSchema.ID != "secret" {
+			subSchema.Store = subtype.NewSubTypeStore(subSchema.ID, schema.Store)
+		}
+	}
 }
 
 func Pod(k8sClient rest.Interface, schemas *types.Schemas) {
