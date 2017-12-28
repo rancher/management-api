@@ -6,6 +6,7 @@ import (
 
 const (
 	EndpointType                 = "endpoint"
+	EndpointField                = "creatorId"
 	EndpointFieldAnnotations     = "annotations"
 	EndpointFieldCreated         = "created"
 	EndpointFieldFinalizers      = "finalizers"
@@ -13,6 +14,7 @@ const (
 	EndpointFieldName            = "name"
 	EndpointFieldNamespaceId     = "namespaceId"
 	EndpointFieldOwnerReferences = "ownerReferences"
+	EndpointFieldPodIDs          = "podIds"
 	EndpointFieldProjectID       = "projectId"
 	EndpointFieldRemoved         = "removed"
 	EndpointFieldTargets         = "targets"
@@ -21,6 +23,7 @@ const (
 
 type Endpoint struct {
 	types.Resource
+	string          `json:"creatorId,omitempty"`
 	Annotations     map[string]string `json:"annotations,omitempty"`
 	Created         string            `json:"created,omitempty"`
 	Finalizers      []string          `json:"finalizers,omitempty"`
@@ -28,6 +31,7 @@ type Endpoint struct {
 	Name            string            `json:"name,omitempty"`
 	NamespaceId     string            `json:"namespaceId,omitempty"`
 	OwnerReferences []OwnerReference  `json:"ownerReferences,omitempty"`
+	PodIDs          []string          `json:"podIds,omitempty"`
 	ProjectID       string            `json:"projectId,omitempty"`
 	Removed         string            `json:"removed,omitempty"`
 	Targets         []Target          `json:"targets,omitempty"`
