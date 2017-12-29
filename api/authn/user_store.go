@@ -49,7 +49,7 @@ func (s *userStore) Create(apiContext *types.APIContext, schema *types.Schema, d
 	return created, err
 }
 
-func (s *userStore) List(apiContext *types.APIContext, schema *types.Schema, opt types.QueryOptions) ([]map[string]interface{}, error) {
+func (s *userStore) List(apiContext *types.APIContext, schema *types.Schema, opt *types.QueryOptions) ([]map[string]interface{}, error) {
 
 	req := apiContext.Request
 
