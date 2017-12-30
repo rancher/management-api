@@ -11,9 +11,11 @@ import (
 
 var (
 	NamespaceBackedResource condition.Cond = "BackingNamespaceCreated"
+	CreatorMadeOwner        condition.Cond = "CreatorMadeOwner"
 )
 
 type Project struct {
+	types.Namespaced
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
