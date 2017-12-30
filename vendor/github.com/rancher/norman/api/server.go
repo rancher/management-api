@@ -166,11 +166,7 @@ func (s *Server) handle(rw http.ResponseWriter, req *http.Request) (*types.APICo
 		return apiRequest, err
 	}
 
-	if err := CheckCSRF(rw, req); err != nil {
-		return apiRequest, err
-	}
-
-	if err := addCommonResponseHeader(apiRequest); err != nil {
+	if err := CheckCSRF(apiRequest); err != nil {
 		return apiRequest, err
 	}
 

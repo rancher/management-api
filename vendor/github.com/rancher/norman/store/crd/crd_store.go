@@ -15,7 +15,7 @@ import (
 type Store struct {
 	Factory      *Factory
 	k8sClient    rest.Interface
-	schemaStores map[string]*proxy.Store
+	schemaStores map[string]types.Store
 }
 
 func NewCRDStoreFromConfig(config rest.Config) (*Store, error) {
@@ -44,7 +44,7 @@ func NewCRDStoreFromClients(apiExtClientSet apiextclientset.Interface, k8sClient
 			APIExtClientSet: apiExtClientSet,
 		},
 		k8sClient:    k8sClient,
-		schemaStores: map[string]*proxy.Store{},
+		schemaStores: map[string]types.Store{},
 	}
 }
 
@@ -119,7 +119,7 @@ func (c *Store) AddSchemas(ctx context.Context, schemas ...*types.Schema) error 
 	}
 
 	for schema, crd := range schemaStatus {
-		c.schemaStores[key(schema)] = proxy.NewProxyStore(c.k8sClient,
+		c.schemaStores[key(schema)] = proxy.NewProxyStoreForCRD(c.k8sClient,
 			[]string{"apis"},
 			crd.Spec.Group,
 			crd.Spec.Version,

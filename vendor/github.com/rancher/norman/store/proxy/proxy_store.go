@@ -14,6 +14,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/runtime/serializer/json"
 	"k8s.io/apimachinery/pkg/runtime/serializer/streaming"
+	patchtype "k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/rest"
@@ -36,9 +37,48 @@ type Store struct {
 	kind           string
 	resourcePlural string
 	authContext    map[string]string
+	supportPatch   bool
 }
 
 func NewProxyStore(k8sClient rest.Interface,
+	prefix []string, group, version, kind, resourcePlural string) types.Store {
+	return &errorStore{
+		Store: &Store{
+			supportPatch:   true,
+			k8sClient:      k8sClient,
+			prefix:         prefix,
+			group:          group,
+			version:        version,
+			kind:           kind,
+			resourcePlural: resourcePlural,
+			authContext: map[string]string{
+				"apiGroup": group,
+				"resource": resourcePlural,
+			},
+		},
+	}
+}
+
+func NewProxyStoreForCRD(k8sClient rest.Interface,
+	prefix []string, group, version, kind, resourcePlural string) types.Store {
+	return &errorStore{
+		Store: &Store{
+			supportPatch:   false,
+			k8sClient:      k8sClient,
+			prefix:         prefix,
+			group:          group,
+			version:        version,
+			kind:           kind,
+			resourcePlural: resourcePlural,
+			authContext: map[string]string{
+				"apiGroup": group,
+				"resource": resourcePlural,
+			},
+		},
+	}
+}
+
+func NewRawProxyStore(k8sClient rest.Interface,
 	prefix []string, group, version, kind, resourcePlural string) *Store {
 	return &Store{
 		k8sClient:      k8sClient,
@@ -198,6 +238,21 @@ func (p *Store) toInternal(mapper types.Mapper, data map[string]interface{}) {
 }
 
 func (p *Store) Update(apiContext *types.APIContext, schema *types.Schema, data map[string]interface{}, id string) (map[string]interface{}, error) {
+	if p.supportPatch {
+		p.toInternal(schema.Mapper, data)
+		namespace, id := splitID(id)
+
+		req := p.common(namespace, p.k8sClient.Patch(patchtype.StrategicMergePatchType)).
+			Body(&unstructured.Unstructured{
+				Object: data,
+			}).
+			Name(id).
+			SetHeader("Content-Type", string(patchtype.StrategicMergePatchType))
+
+		_, result, err := p.singleResult(apiContext, schema, req)
+		return result, err
+	}
+
 	resourceVersion, existing, err := p.byID(apiContext, schema, id)
 	if err != nil {
 		return data, nil
