@@ -26,6 +26,7 @@ import (
 	projectclient "github.com/rancher/types/client/project/v3"
 	"github.com/rancher/types/config"
 	"github.com/satori/uuid"
+	"github.com/rancher/management-api/api/stack"
 )
 
 var (
@@ -45,6 +46,7 @@ func Schemas(ctx context.Context, management *config.ManagementContext, schemas 
 	SecretTypes(schemas, management)
 	MachineTypes(schemas, management)
 	ClusterTypes(schemas)
+	Stack(schemas, management)
 
 	crdStore, err := crd.NewCRDStoreFromConfig(management.RESTConfig)
 	if err != nil {
@@ -196,5 +198,12 @@ func MachineTypes(schemas *types.Schemas, management *config.ManagementContext) 
 func ClusterTypes(schemas *types.Schemas) {
 	schema := schemas.Schema(&managementschema.Version, client.ClusterType)
 	schema.Validator = cluster.Validator
+}
 
+func Stack(schemas *types.Schemas, management *config.ManagementContext) {
+	schema := schemas.Schema(&managementschema.Version, client.StackType)
+	actionWrapper := stack.ActionWrapper{
+		Management: *management,
+	}
+	schema.ActionHandler = actionWrapper.ActionHandler
 }
