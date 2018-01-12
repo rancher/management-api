@@ -8,6 +8,7 @@ const (
 	WorkloadSpecFieldContainers                    = "containers"
 	WorkloadSpecFieldDNSPolicy                     = "dnsPolicy"
 	WorkloadSpecFieldDeploymentStrategy            = "deploymentStrategy"
+	WorkloadSpecFieldDescription                   = "description"
 	WorkloadSpecFieldFsgid                         = "fsgid"
 	WorkloadSpecFieldGids                          = "gids"
 	WorkloadSpecFieldHostAliases                   = "hostAliases"
@@ -19,6 +20,7 @@ const (
 	WorkloadSpecFieldPID                           = "pid"
 	WorkloadSpecFieldPriority                      = "priority"
 	WorkloadSpecFieldPriorityClassName             = "priorityClassName"
+	WorkloadSpecFieldPullPolicy                    = "pullPolicy"
 	WorkloadSpecFieldPullSecrets                   = "pullSecrets"
 	WorkloadSpecFieldRestart                       = "restart"
 	WorkloadSpecFieldRunAsNonRoot                  = "runAsNonRoot"
@@ -40,6 +42,7 @@ type WorkloadSpec struct {
 	Containers                    []Container            `json:"containers,omitempty"`
 	DNSPolicy                     string                 `json:"dnsPolicy,omitempty"`
 	DeploymentStrategy            *DeployStrategy        `json:"deploymentStrategy,omitempty"`
+	Description                   string                 `json:"description,omitempty"`
 	Fsgid                         *int64                 `json:"fsgid,omitempty"`
 	Gids                          []int64                `json:"gids,omitempty"`
 	HostAliases                   map[string]HostAlias   `json:"hostAliases,omitempty"`
@@ -51,6 +54,7 @@ type WorkloadSpec struct {
 	PID                           string                 `json:"pid,omitempty"`
 	Priority                      *int64                 `json:"priority,omitempty"`
 	PriorityClassName             string                 `json:"priorityClassName,omitempty"`
+	PullPolicy                    string                 `json:"pullPolicy,omitempty"`
 	PullSecrets                   []LocalObjectReference `json:"pullSecrets,omitempty"`
 	Restart                       string                 `json:"restart,omitempty"`
 	RunAsNonRoot                  *bool                  `json:"runAsNonRoot,omitempty"`

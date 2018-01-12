@@ -39,7 +39,7 @@ func NodeTypes(version *types.APIVersion, schemas *types.Schemas) *types.Schemas
 			&m.Drop{Field: "daemonEndpoints"},
 			&m.Drop{Field: "images"},
 			&m.Drop{Field: "nodeInfo"},
-			&m.Drop{Field: "conditions"},
+			&m.Move{From: "conditions", To: "nodeConditions"},
 			&m.Drop{Field: "phase"},
 			&m.SliceToMap{Field: "volumesAttached", Key: "devicePath"},
 		).
@@ -55,6 +55,7 @@ func NodeTypes(version *types.APIVersion, schemas *types.Schemas) *types.Schemas
 				"unschedulable": "ru",
 			}}).
 		AddMapperForType(version, v1.Node{},
+			&m.AnnotationField{Field: "description"},
 			&m.Embed{Field: "status"},
 		).
 		MustImport(version, v1.NodeStatus{}, struct {
@@ -62,7 +63,9 @@ func NodeTypes(version *types.APIVersion, schemas *types.Schemas) *types.Schemas
 			Hostname  string
 			Info      NodeInfo
 		}{}).
-		MustImport(version, v1.Node{})
+		MustImport(version, v1.Node{}, struct {
+			Description string `json:"description"`
+		}{})
 }
 
 func volumeTypes(schemas *types.Schemas) *types.Schemas {

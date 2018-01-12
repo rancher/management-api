@@ -10,9 +10,9 @@ const (
 	ServiceFieldClusterIp                = "clusterIp"
 	ServiceFieldCreated                  = "created"
 	ServiceFieldCreatorID                = "creatorId"
+	ServiceFieldDescription              = "description"
 	ServiceFieldExternalIPs              = "externalIPs"
 	ServiceFieldExternalTrafficPolicy    = "externalTrafficPolicy"
-	ServiceFieldFinalizers               = "finalizers"
 	ServiceFieldHealthCheckNodePort      = "healthCheckNodePort"
 	ServiceFieldHostname                 = "hostname"
 	ServiceFieldIPAddresses              = "ipAddresses"
@@ -45,9 +45,9 @@ type Service struct {
 	ClusterIp                string                 `json:"clusterIp,omitempty"`
 	Created                  string                 `json:"created,omitempty"`
 	CreatorID                string                 `json:"creatorId,omitempty"`
+	Description              string                 `json:"description,omitempty"`
 	ExternalIPs              []string               `json:"externalIPs,omitempty"`
 	ExternalTrafficPolicy    string                 `json:"externalTrafficPolicy,omitempty"`
-	Finalizers               []string               `json:"finalizers,omitempty"`
 	HealthCheckNodePort      *int64                 `json:"healthCheckNodePort,omitempty"`
 	Hostname                 string                 `json:"hostname,omitempty"`
 	IPAddresses              []string               `json:"ipAddresses,omitempty"`

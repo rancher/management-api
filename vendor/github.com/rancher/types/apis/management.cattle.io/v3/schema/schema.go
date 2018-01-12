@@ -103,11 +103,31 @@ func authzTypes(schemas *types.Schemas) *types.Schemas {
 				field.Nullable = false
 				return field
 			})
+			schema.MustCustomizeField("subjectName", func(field types.Field) types.Field {
+				field.Required = true
+				field.Nullable = false
+				return field
+			})
+			schema.MustCustomizeField("roleTemplateId", func(field types.Field) types.Field {
+				field.Required = true
+				field.Nullable = false
+				return field
+			})
 		}).
 		MustImportAndCustomize(&Version, v3.ProjectRoleTemplateBinding{}, func(schema *types.Schema) {
 			schema.MustCustomizeField("subjectKind", func(field types.Field) types.Field {
 				field.Type = "enum"
 				field.Options = []string{"User", "Group", "ServiceAccount", "Principal"}
+				field.Nullable = false
+				return field
+			})
+			schema.MustCustomizeField("subjectName", func(field types.Field) types.Field {
+				field.Required = true
+				field.Nullable = false
+				return field
+			})
+			schema.MustCustomizeField("roleTemplateId", func(field types.Field) types.Field {
+				field.Required = true
 				field.Nullable = false
 				return field
 			})
@@ -119,6 +139,16 @@ func authzTypes(schemas *types.Schemas) *types.Schemas {
 				field.Nullable = false
 				return field
 			})
+			schema.MustCustomizeField("subjectName", func(field types.Field) types.Field {
+				field.Required = true
+				field.Nullable = false
+				return field
+			})
+			schema.MustCustomizeField("globalRoleId", func(field types.Field) types.Field {
+				field.Required = true
+				field.Nullable = false
+				return field
+			})
 		})
 }
 
@@ -126,11 +156,11 @@ func machineTypes(schemas *types.Schemas) *types.Schemas {
 	return schemas.
 		AddMapperForType(&Version, v3.MachineSpec{}, &m.Embed{Field: "nodeSpec"}).
 		AddMapperForType(&Version, v3.MachineStatus{},
-			&m.Drop{Field: "conditions"},
 			&m.Drop{Field: "rkeNode"},
 			&m.Drop{Field: "machineTemplateSpec"},
 			&m.Drop{Field: "machineDriverConfig"},
-			&m.Embed{Field: "nodeStatus"}).
+			&m.Embed{Field: "nodeStatus"},
+			&m.SliceMerge{From: []string{"conditions", "nodeConditions"}, To: "conditions"}).
 		AddMapperForType(&Version, v3.Machine{},
 			&m.Embed{Field: "status"},
 			m.DisplayName{}).

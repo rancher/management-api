@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	rbacGroup = "bac.authorization.k8s.io"
+	rbacGroup = "rbac.authorization.k8s.io"
 )
 
 func newIndexes(client v1.Interface) (user *permissionIndex, group *permissionIndex) {
@@ -60,7 +60,7 @@ func clusterRoleBindingIndexer(kind string, obj interface{}) ([]string, error) {
 			result = append(result, subject.Name)
 		}
 	}
-	return nil, nil
+	return result, nil
 }
 
 func roleBindingIndexer(kind string, obj interface{}) ([]string, error) {
@@ -71,7 +71,7 @@ func roleBindingIndexer(kind string, obj interface{}) ([]string, error) {
 			result = append(result, subject.Name)
 		}
 	}
-	return nil, nil
+	return result, nil
 }
 
 type permissionIndex struct {
@@ -110,8 +110,14 @@ func (p *permissionIndex) filterPermissions(result []ListPermission, namespace, 
 			continue
 		}
 
+		nsForResourceNameGets := namespace
+		if namespace == "*" {
+			nsForResourceNameGets = ""
+		}
 		for _, verb := range rule.Verbs {
 			switch verb {
+			case "*":
+				fallthrough
 			case "list":
 				result = append(result, ListPermission{
 					Namespace: namespace,
@@ -120,7 +126,7 @@ func (p *permissionIndex) filterPermissions(result []ListPermission, namespace, 
 			case "get":
 				for _, resourceName := range rule.ResourceNames {
 					result = append(result, ListPermission{
-						Namespace: namespace,
+						Namespace: nsForResourceNameGets,
 						Name:      resourceName,
 					})
 				}
@@ -131,8 +137,8 @@ func (p *permissionIndex) filterPermissions(result []ListPermission, namespace, 
 	return result
 }
 
-func (p *permissionIndex) getClusterRoleBindings(name string) []rbacv1.ClusterRoleBinding {
-	var result []rbacv1.ClusterRoleBinding
+func (p *permissionIndex) getClusterRoleBindings(name string) []*rbacv1.ClusterRoleBinding {
+	var result []*rbacv1.ClusterRoleBinding
 
 	objs, err := p.crbIndexer.ByIndex(p.clusterRoleIndexKey, name)
 	if err != nil {
@@ -140,14 +146,14 @@ func (p *permissionIndex) getClusterRoleBindings(name string) []rbacv1.ClusterRo
 	}
 
 	for _, obj := range objs {
-		result = append(result, obj.(rbacv1.ClusterRoleBinding))
+		result = append(result, obj.(*rbacv1.ClusterRoleBinding))
 	}
 
 	return result
 }
 
-func (p *permissionIndex) getRoleBindings(name string) []rbacv1.RoleBinding {
-	var result []rbacv1.RoleBinding
+func (p *permissionIndex) getRoleBindings(name string) []*rbacv1.RoleBinding {
+	var result []*rbacv1.RoleBinding
 
 	objs, err := p.rbIndexer.ByIndex(p.roleIndexKey, name)
 	if err != nil {
@@ -155,7 +161,7 @@ func (p *permissionIndex) getRoleBindings(name string) []rbacv1.RoleBinding {
 	}
 
 	for _, obj := range objs {
-		result = append(result, obj.(rbacv1.RoleBinding))
+		result = append(result, obj.(*rbacv1.RoleBinding))
 	}
 
 	return result
