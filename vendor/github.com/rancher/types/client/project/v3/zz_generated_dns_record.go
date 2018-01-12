@@ -10,7 +10,7 @@ const (
 	DNSRecordFieldClusterIp            = "clusterIp"
 	DNSRecordFieldCreated              = "created"
 	DNSRecordFieldCreatorID            = "creatorId"
-	DNSRecordFieldFinalizers           = "finalizers"
+	DNSRecordFieldDescription          = "description"
 	DNSRecordFieldHostname             = "hostname"
 	DNSRecordFieldIPAddresses          = "ipAddresses"
 	DNSRecordFieldLabels               = "labels"
@@ -35,7 +35,7 @@ type DNSRecord struct {
 	ClusterIp            string            `json:"clusterIp,omitempty"`
 	Created              string            `json:"created,omitempty"`
 	CreatorID            string            `json:"creatorId,omitempty"`
-	Finalizers           []string          `json:"finalizers,omitempty"`
+	Description          string            `json:"description,omitempty"`
 	Hostname             string            `json:"hostname,omitempty"`
 	IPAddresses          []string          `json:"ipAddresses,omitempty"`
 	Labels               map[string]string `json:"labels,omitempty"`

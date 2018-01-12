@@ -10,7 +10,7 @@ const (
 	SecretFieldCreated         = "created"
 	SecretFieldCreatorID       = "creatorId"
 	SecretFieldData            = "data"
-	SecretFieldFinalizers      = "finalizers"
+	SecretFieldDescription     = "description"
 	SecretFieldKind            = "kind"
 	SecretFieldLabels          = "labels"
 	SecretFieldName            = "name"
@@ -28,7 +28,7 @@ type Secret struct {
 	Created         string            `json:"created,omitempty"`
 	CreatorID       string            `json:"creatorId,omitempty"`
 	Data            map[string]string `json:"data,omitempty"`
-	Finalizers      []string          `json:"finalizers,omitempty"`
+	Description     string            `json:"description,omitempty"`
 	Kind            string            `json:"kind,omitempty"`
 	Labels          map[string]string `json:"labels,omitempty"`
 	Name            string            `json:"name,omitempty"`

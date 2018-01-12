@@ -11,6 +11,8 @@ import (
 func secretTypes(schemas *types.Schemas) *types.Schemas {
 	return schemas.
 		AddMapperForType(&Version, v1.Secret{},
+			&m.AnnotationField{Field: "description"},
+			m.AnnotationField{Field: "projectId", IgnoreDefinition: true},
 			m.SetValue{
 				Field: "type",
 				IfEq:  "kubernetes.io/service-account-token",
@@ -217,7 +219,9 @@ func secretTypes(schemas *types.Schemas) *types.Schemas {
 				}
 				return f
 			})
-		}, projectOverride{}).
+		}, projectOverride{}, struct {
+			Description string `json:"description"`
+		}{}).
 		Init(func(schemas *types.Schemas) *types.Schemas {
 			return addSecretSubtypes(schemas,
 				v3.ServiceAccountToken{},

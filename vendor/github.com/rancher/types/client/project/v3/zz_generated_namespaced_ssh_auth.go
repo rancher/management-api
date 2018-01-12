@@ -9,7 +9,7 @@ const (
 	NamespacedSSHAuthFieldAnnotations     = "annotations"
 	NamespacedSSHAuthFieldCreated         = "created"
 	NamespacedSSHAuthFieldCreatorID       = "creatorId"
-	NamespacedSSHAuthFieldFinalizers      = "finalizers"
+	NamespacedSSHAuthFieldDescription     = "description"
 	NamespacedSSHAuthFieldFingerprint     = "certFingerprint"
 	NamespacedSSHAuthFieldLabels          = "labels"
 	NamespacedSSHAuthFieldName            = "name"
@@ -26,7 +26,7 @@ type NamespacedSSHAuth struct {
 	Annotations     map[string]string `json:"annotations,omitempty"`
 	Created         string            `json:"created,omitempty"`
 	CreatorID       string            `json:"creatorId,omitempty"`
-	Finalizers      []string          `json:"finalizers,omitempty"`
+	Description     string            `json:"description,omitempty"`
 	Fingerprint     string            `json:"certFingerprint,omitempty"`
 	Labels          map[string]string `json:"labels,omitempty"`
 	Name            string            `json:"name,omitempty"`

@@ -10,7 +10,7 @@ const (
 	GlobalRoleFieldBuiltin         = "builtin"
 	GlobalRoleFieldCreated         = "created"
 	GlobalRoleFieldCreatorID       = "creatorId"
-	GlobalRoleFieldFinalizers      = "finalizers"
+	GlobalRoleFieldDescription     = "description"
 	GlobalRoleFieldId              = "id"
 	GlobalRoleFieldLabels          = "labels"
 	GlobalRoleFieldName            = "name"
@@ -26,7 +26,7 @@ type GlobalRole struct {
 	Builtin         *bool             `json:"builtin,omitempty"`
 	Created         string            `json:"created,omitempty"`
 	CreatorID       string            `json:"creatorId,omitempty"`
-	Finalizers      []string          `json:"finalizers,omitempty"`
+	Description     string            `json:"description,omitempty"`
 	Id              string            `json:"id,omitempty"`
 	Labels          map[string]string `json:"labels,omitempty"`
 	Name            string            `json:"name,omitempty"`
