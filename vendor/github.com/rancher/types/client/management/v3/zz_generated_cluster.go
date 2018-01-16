@@ -12,6 +12,7 @@ const (
 	ClusterFieldAzureKubernetesServiceConfig        = "azureKubernetesServiceConfig"
 	ClusterFieldCACert                              = "caCert"
 	ClusterFieldCapacity                            = "capacity"
+	ClusterFieldClusterName                         = "clusterName"
 	ClusterFieldComponentStatuses                   = "componentStatuses"
 	ClusterFieldConditions                          = "conditions"
 	ClusterFieldCreated                             = "created"
@@ -45,6 +46,7 @@ type Cluster struct {
 	AzureKubernetesServiceConfig        *AzureKubernetesServiceConfig  `json:"azureKubernetesServiceConfig,omitempty"`
 	CACert                              string                         `json:"caCert,omitempty"`
 	Capacity                            map[string]string              `json:"capacity,omitempty"`
+	ClusterName                         string                         `json:"clusterName,omitempty"`
 	ComponentStatuses                   []ClusterComponentStatus       `json:"componentStatuses,omitempty"`
 	Conditions                          []ClusterCondition             `json:"conditions,omitempty"`
 	Created                             string                         `json:"created,omitempty"`
