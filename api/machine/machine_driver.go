@@ -56,4 +56,10 @@ func Formatter(apiContext *types.APIContext, resource *types.RawResource) {
 	if len(roles) == 0 {
 		resource.Values[client.MachineFieldRole] = []string{"worker"}
 	}
+
+	// remove link
+	machineTemplateID, ok := resource.Values["machineTemplateId"]
+	if !ok || machineTemplateID == nil {
+		delete(resource.Links, "remove")
+	}
 }
