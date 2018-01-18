@@ -179,6 +179,7 @@ func MachineTypes(schemas *types.Schemas, management *config.ManagementContext) 
 
 	schema = schemas.Schema(&managementschema.Version, client.MachineType)
 	schema.Validator = machine.Validator
+	schema.Formatter = machine.Formatter
 
 	schema = schemas.Schema(&managementschema.Version, client.MachineConfigType)
 	schema.Validator = machine.Validator
