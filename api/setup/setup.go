@@ -10,6 +10,7 @@ import (
 	"github.com/rancher/management-api/api/cluster"
 	"github.com/rancher/management-api/api/machine"
 	"github.com/rancher/management-api/api/project"
+	"github.com/rancher/management-api/api/stack"
 	clustermanager "github.com/rancher/management-api/cluster"
 	"github.com/rancher/management-api/store/cert"
 	"github.com/rancher/management-api/store/preference"
@@ -26,7 +27,6 @@ import (
 	projectclient "github.com/rancher/types/client/project/v3"
 	"github.com/rancher/types/config"
 	"github.com/satori/uuid"
-	"github.com/rancher/management-api/api/stack"
 )
 
 var (

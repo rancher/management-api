@@ -16,17 +16,17 @@ import (
 	"net/url"
 
 	hutils "github.com/rancher/helm-controller/utils"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"github.com/rancher/norman/api/access"
 	"github.com/rancher/norman/parse"
 	"github.com/rancher/norman/types"
 	"github.com/rancher/norman/types/convert"
 	managementschema "github.com/rancher/types/apis/management.cattle.io/v3/schema"
+	client "github.com/rancher/types/client/management/v3"
 	managementv3 "github.com/rancher/types/client/management/v3"
 	"github.com/rancher/types/config"
 	yaml "gopkg.in/yaml.v2"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
-	client "github.com/rancher/types/client/management/v3"
 )
 
 const (
