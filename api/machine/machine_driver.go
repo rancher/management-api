@@ -16,7 +16,7 @@ type Handlers struct {
 }
 
 func (h *Handlers) ActionHandler(actionName string, action *types.Action, apiContext *types.APIContext) error {
-	m, err := h.MachineDriverClient.GetNamespace(apiContext.ID, "", metav1.GetOptions{})
+	m, err := h.MachineDriverClient.GetNamespaced("", apiContext.ID, metav1.GetOptions{})
 	if err != nil {
 		return err
 	}
