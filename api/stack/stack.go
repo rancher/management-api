@@ -82,15 +82,19 @@ func (a ActionWrapper) ActionHandler(actionName string, action *types.Action, ap
 		if err != nil {
 			return err
 		}
-		externalID := actionInput["templateVersionId"]
+		externalID := actionInput["externalId"]
 		updateData := map[string]interface{}{}
-		updateData["templateVersionId"] = externalID
+		updateData["externalId"] = externalID
 		_, err = store.Update(apiContext, apiContext.Schema, updateData, apiContext.ID)
 		if err != nil {
 			return err
 		}
+		templateVersionID, err := parseExternalID(convert.ToString(externalID))
+		if err != nil {
+			return err
+		}
 		var templateVersion managementv3.TemplateVersion
-		if err := access.ByID(apiContext, &managementschema.Version, managementv3.TemplateVersionType, convert.ToString(externalID), &templateVersion); err != nil {
+		if err := access.ByID(apiContext, &managementschema.Version, managementv3.TemplateVersionType, templateVersionID, &templateVersion); err != nil {
 			return err
 		}
 		files := convertTemplates(templateVersion.Files)
@@ -241,4 +245,16 @@ func (a ActionWrapper) toRESTConfig(cluster *client.Cluster) (*rest.Config, erro
 			CAData: data,
 		},
 	}, nil
+}
+
+func parseExternalID(externalID string) (string, error) {
+	values, err := url.ParseQuery(externalID)
+	if err != nil {
+		return "", err
+	}
+	catalog := values.Get("catalog://?catalog")
+	base := values.Get("base")
+	template := values.Get("template")
+	version := values.Get("version")
+	return strings.Join([]string{catalog, base, template, version}, "-"), nil
 }
