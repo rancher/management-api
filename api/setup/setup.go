@@ -184,13 +184,15 @@ func MachineTypes(schemas *types.Schemas, management *config.ManagementContext) 
 	schema := schemas.Schema(&managementschema.Version, client.MachineDriverType)
 	handlers := &machine.Handlers{
 		MachineDriverClient: management.Management.MachineDrivers(""),
+		MachineClient:       management.Management.Machines(""),
+		Clusters:            management.Management.Clusters(""),
 	}
-	schema.Formatter = handlers.Formatter
+	schema.Formatter = handlers.FormatterDriver
 	schema.ActionHandler = handlers.ActionHandler
 
 	schema = schemas.Schema(&managementschema.Version, client.MachineType)
 	schema.Validator = machine.Validator
-	schema.Formatter = machine.Formatter
+	schema.Formatter = handlers.Formatter
 
 	schema = schemas.Schema(&managementschema.Version, client.MachineConfigType)
 	schema.Validator = machine.Validator
