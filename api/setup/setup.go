@@ -62,7 +62,7 @@ func Schemas(ctx context.Context, management *config.ManagementContext, schemas 
 		return err
 	}
 
-	authn.SetUserStore(schemas.Schema(&managementschema.Version, client.UserType))
+	authn.SetUserStore(schemas.Schema(&managementschema.Version, client.UserType), management)
 	Preference(schemas, management)
 
 	NamespacedTypes(schemas)
