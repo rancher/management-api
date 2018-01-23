@@ -10,6 +10,8 @@ import (
 
 	"errors"
 
+	"strconv"
+
 	"github.com/rancher/norman/types/slice"
 	"github.com/rancher/types/apis/management.cattle.io/v3"
 	"github.com/sirupsen/logrus"
@@ -176,8 +178,49 @@ func (s *Server) serveHTTPS(config *v3.ListenConfig) error {
 		Handler: s.Handler(),
 	}
 
+	s.servers = append(s.servers, server)
 	s.startServer(listener, server)
+
+	httpListener, err := s.newListener(s.httpPort)
+	if err != nil {
+		return err
+	}
+	s.listeners = append(s.listeners, httpListener)
+
+	httpServer := &http.Server{
+		Handler: http.HandlerFunc(httpRedirect),
+	}
+
+	s.servers = append(s.servers, httpServer)
+	s.startServer(httpListener, httpServer)
+
 	return nil
+}
+
+// Approach taken from letsencrypt, except manglePort is specific to us
+func httpRedirect(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" && r.Method != "HEAD" {
+		http.Error(w, "Use HTTPS", http.StatusBadRequest)
+		return
+	}
+	target := "https://" + manglePort(r.Host) + r.URL.RequestURI()
+	http.Redirect(w, r, target, http.StatusFound)
+}
+
+func manglePort(hostport string) string {
+	host, port, err := net.SplitHostPort(hostport)
+	if err != nil {
+		return hostport
+	}
+
+	portInt, err := strconv.Atoi(port)
+	if err != nil {
+		return hostport
+	}
+
+	portInt = (portInt / 1000) + 443
+
+	return net.JoinHostPort(host, strconv.Itoa(portInt))
 }
 
 func (s *Server) serveHTTP(config *v3.ListenConfig) error {
