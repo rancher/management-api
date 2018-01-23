@@ -2,20 +2,21 @@ package listener
 
 import (
 	"context"
+	"crypto/rsa"
 	"crypto/tls"
+	"crypto/x509"
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
-	"sync"
-
-	"errors"
-
 	"strconv"
+	"sync"
 
 	"github.com/rancher/norman/types/slice"
 	"github.com/rancher/types/apis/management.cattle.io/v3"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/acme/autocert"
+	"k8s.io/client-go/util/cert"
 )
 
 const (
@@ -29,6 +30,7 @@ type Server struct {
 
 	handler             HandlerGetter
 	httpPort, httpsPort int
+	certs               map[string]*tls.Certificate
 
 	listeners    []net.Listener
 	servers      []*http.Server
@@ -36,10 +38,12 @@ type Server struct {
 	activeMode   string
 
 	// dynamic config change on refresh
-	activeCert *tls.Certificate
-	domains    map[string]bool
-	tos        []string
-	tosAll     bool
+	activeCert  *tls.Certificate
+	activeCA    *x509.Certificate
+	activeCAKey *rsa.PrivateKey
+	domains     map[string]bool
+	tos         []string
+	tosAll      bool
 }
 
 func NewServer(handler HandlerGetter, httpPort, httpsPort int) *Server {
@@ -47,6 +51,7 @@ func NewServer(handler HandlerGetter, httpPort, httpsPort int) *Server {
 		handler:   handler,
 		httpPort:  httpPort,
 		httpsPort: httpsPort,
+		certs:     map[string]*tls.Certificate{},
 	}
 }
 
@@ -84,9 +89,24 @@ func (s *Server) Enable(config *v3.ListenConfig) (bool, error) {
 		s.activeCert = &cert
 	}
 
+	if config.CACert != "" && config.CAKey != "" {
+		cert, err := tls.X509KeyPair([]byte(config.CACert), []byte(config.CAKey))
+		if err != nil {
+			return false, err
+		}
+		s.activeCAKey = cert.PrivateKey.(*rsa.PrivateKey)
+
+		x509Cert, err := x509.ParseCertificate(cert.Certificate[0])
+		if err != nil {
+			return false, err
+		}
+		s.activeCA = x509Cert
+	}
+
 	if s.activeConfig == nil || config.Mode != s.activeMode {
 		return true, s.reload(config)
 	}
+
 	return true, nil
 }
 
@@ -154,10 +174,50 @@ func (s *Server) reload(config *v3.ListenConfig) error {
 }
 
 func (s *Server) getCertificate(hello *tls.ClientHelloInfo) (*tls.Certificate, error) {
+	fmt.Println("!!!!!", hello.ServerName)
 	s.Lock()
 	defer s.Unlock()
 
-	return s.activeCert, nil
+	if s.activeCert != nil {
+		return s.activeCert, nil
+	}
+
+	serverNameCert, ok := s.certs[hello.ServerName]
+	if ok {
+		return serverNameCert, nil
+	}
+
+	ipAddr := net.ParseIP(hello.ServerName)
+	cfg := cert.Config{
+		CommonName:   hello.ServerName,
+		Organization: s.activeCA.Subject.Organization,
+		Usages:       []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
+	}
+	if len(ipAddr) > 0 {
+		cfg.AltNames.IPs = []net.IP{ipAddr}
+	} else {
+		cfg.AltNames.DNSNames = []string{hello.ServerName}
+	}
+
+	key, err := cert.NewPrivateKey()
+	if err != nil {
+		return nil, err
+	}
+
+	cert, err := cert.NewSignedCert(cfg, key, s.activeCA, s.activeCAKey)
+	if err != nil {
+		return nil, err
+	}
+
+	tlsCert := &tls.Certificate{
+		Certificate: [][]byte{
+			cert.Raw,
+		},
+		PrivateKey: key,
+	}
+
+	s.certs[hello.ServerName] = tlsCert
+	return tlsCert, nil
 }
 
 func (s *Server) serveHTTPS(config *v3.ListenConfig) error {
