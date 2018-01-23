@@ -11,6 +11,7 @@ import (
 	"github.com/rancher/management-api/api/cluster"
 	"github.com/rancher/management-api/api/machine"
 	"github.com/rancher/management-api/api/project"
+	"github.com/rancher/management-api/api/setting"
 	"github.com/rancher/management-api/api/stack"
 	clustermanager "github.com/rancher/management-api/cluster"
 	"github.com/rancher/management-api/store/cert"
@@ -47,6 +48,7 @@ func Schemas(ctx context.Context, management *config.ManagementContext, schemas 
 	SecretTypes(schemas, management)
 	ClusterTypes(schemas)
 	Stack(schemas, management)
+	Setting(schemas)
 
 	secretStore, err := machineconfig.NewStore(management)
 	if err != nil {
@@ -220,4 +222,9 @@ func Stack(schemas *types.Schemas, management *config.ManagementContext) {
 		Management: *management,
 	}
 	schema.ActionHandler = actionWrapper.ActionHandler
+}
+
+func Setting(schemas *types.Schemas) {
+	schema := schemas.Schema(&managementschema.Version, client.SettingType)
+	schema.Formatter = setting.Formatter
 }
