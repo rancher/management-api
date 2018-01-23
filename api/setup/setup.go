@@ -2,9 +2,10 @@ package setup
 
 import (
 	"context"
-
 	"encoding/base64"
 
+	"github.com/rancher/machine-controller/store"
+	machineconfig "github.com/rancher/machine-controller/store/config"
 	"github.com/rancher/management-api/api/authn"
 	"github.com/rancher/management-api/api/catalog"
 	"github.com/rancher/management-api/api/cluster"
@@ -44,9 +45,14 @@ func Schemas(ctx context.Context, management *config.ManagementContext, schemas 
 	User(schemas, management)
 	Catalog(schemas)
 	SecretTypes(schemas, management)
-	MachineTypes(schemas, management)
 	ClusterTypes(schemas)
 	Stack(schemas, management)
+
+	secretStore, err := machineconfig.NewStore(management)
+	if err != nil {
+		return err
+	}
+	MachineTypes(schemas, management, secretStore)
 
 	crdStore, err := crd.NewCRDStoreFromConfig(management.RESTConfig)
 	if err != nil {
@@ -182,21 +188,25 @@ func Preference(schemas *types.Schemas, management *config.ManagementContext) {
 	schema.Store = preference.NewStore(management.Core.Namespaces(""), schema.Store)
 }
 
-func MachineTypes(schemas *types.Schemas, management *config.ManagementContext) {
+func MachineTypes(schemas *types.Schemas, management *config.ManagementContext, secretStore *store.GenericEncryptedStore) {
 	schema := schemas.Schema(&managementschema.Version, client.MachineDriverType)
-	handlers := &machine.Handlers{
+	machineDriverHandlers := &machine.DriverHandlers{
 		MachineDriverClient: management.Management.MachineDrivers(""),
 	}
-	schema.Formatter = handlers.Formatter
-	schema.ActionHandler = handlers.ActionHandler
+	schema.Formatter = machineDriverHandlers.Formatter
+	schema.ActionHandler = machineDriverHandlers.ActionHandler
+
+	machineHandler := &machine.Handler{
+		SecretStore: secretStore,
+	}
 
 	schema = schemas.Schema(&managementschema.Version, client.MachineType)
 	schema.Validator = machine.Validator
 	schema.Formatter = machine.Formatter
+	schema.LinkHandler = machineHandler.LinkHandler
 
 	schema = schemas.Schema(&managementschema.Version, client.MachineConfigType)
 	schema.Validator = machine.Validator
-
 }
 
 func ClusterTypes(schemas *types.Schemas) {
