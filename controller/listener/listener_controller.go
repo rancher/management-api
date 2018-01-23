@@ -40,26 +40,26 @@ func (c *Controller) sync(key string, listener *v3.ListenConfig) error {
 
 	if listener.Enabled {
 		return c.enable(listener)
-	} else {
-		c.server.Disable(listener)
-		allConfigs, err := c.listenConfigLister.List("", labels.Everything())
-		if err != nil {
-			return err
-		}
+	}
 
-		var lastConfig *v3.ListenConfig
-		for _, config := range allConfigs {
-			if !config.Enabled || config.DeletionTimestamp != nil {
-				continue
-			}
-			if lastConfig == nil || lastConfig.CreationTimestamp.Before(&config.CreationTimestamp) {
-				lastConfig = config
-			}
-		}
+	c.server.Disable(listener)
+	allConfigs, err := c.listenConfigLister.List("", labels.Everything())
+	if err != nil {
+		return err
+	}
 
-		if lastConfig != nil {
-			return c.enable(listener)
+	var lastConfig *v3.ListenConfig
+	for _, config := range allConfigs {
+		if !config.Enabled || config.DeletionTimestamp != nil {
+			continue
 		}
+		if lastConfig == nil || lastConfig.CreationTimestamp.Before(&config.CreationTimestamp) {
+			lastConfig = config
+		}
+	}
+
+	if lastConfig != nil {
+		return c.enable(listener)
 	}
 
 	return nil
